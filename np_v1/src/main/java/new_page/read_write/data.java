@@ -20,23 +20,31 @@ public class data{
         try {
             Object o = new JSONParser().parse(new FileReader(address));
             data_json = (JSONObject) o;
+            JSONArray subjects = (JSONArray) data_json.get("subjects");
+        
+            subject = (JSONArray) subjects.get(p);
         } catch (Exception e) {
             System.out.println(e);
         }
-        
-        JSONArray subjects = (JSONArray) data_json.get("subjects");
-
-        subject = (JSONArray) subjects.get(p);
+    
     }
 
     public String get_title(){
+        try{
         return (String)subject.get(0);
+        }catch(Exception e){
+            return "null";
+        }
     }
 
-    public Color get_col() {
+    public Color get_col(){
+        try{
         JSONArray color_array = (JSONArray) subject.get(1);
         Color out = new Color((int)(long) color_array.get(0),(int)(long) color_array.get(1),(int)(long) color_array.get(2));
         return out;
+        }catch(Exception e){
+            return new Color(255, 0, 255);
+        }
     }
 
     public JSONArray get_tasks() {
@@ -46,11 +54,29 @@ public class data{
              return null;
         }
     }
-
-    public void save_tasks(JSONArray newTasks){
+    public void saveColor(Color c){
+         JSONArray color_array = new JSONArray();
+         color_array.add(0, c.getRed());
+         color_array.add(1, c.getGreen());
+         color_array.add(2, c.getBlue());
+        subject.remove(1);
+        subject.add(1, color_array);
+        
+         try (FileWriter file = new FileWriter(address))
+            {
+                file.write(data_json.toString());
+                System.out.println("Successfully updated json object to file...!!");
+            }catch (Exception e) {
+                
+            }
+    }
+    public void save_tasks(JSONArray newTasks, String title){
+        subject.remove(2);
         subject.add(2, newTasks);
-        data_json.replace("subjects", subject);
-
+        subject.remove(0);
+        subject.add(0, title);
+        //data_json.replace("subjects", subject);
+        System.out.println(newTasks);
         try (FileWriter file = new FileWriter(address))
             {
                 file.write(data_json.toString());

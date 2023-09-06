@@ -14,7 +14,7 @@ public class main {
 
     variables vars = new variables(i_settings);
 
-    left_button[] buttons = {new left_button(0)};
+    left_button[] buttons = {new left_button(0),new left_button(1),new left_button(2)};
 
     public main(){               
         frame = new JFrame("New Page");
